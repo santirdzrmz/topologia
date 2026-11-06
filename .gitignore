@@ -4,3 +4,13 @@ __pycache__/
 .Rhistory
 .DS_Store
 .venv/
+
+# secrets and local config
+.env
+.env.*
+*.pem
+*.key
+.claude/settings.local.json
+
+# large regenerable data (rebuild with: python run_workflow.py inject)
+Archivos_modificados_80_corridas/

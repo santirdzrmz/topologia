@@ -1,0 +1,29 @@
+<section id="features" data-transition="fade" style="background:#ECE8DE;color:#16202E;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A8501A">El método · 1 de 2</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Cada pago es un punto en 8 dimensiones</h2>
+</div>
+<div style="display:flex;gap:40px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFDF8;padding:48px;border-radius:16px;border-top:8px solid #2F6FB0">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Comportamiento · 4 variables</h3>
+<ul style="font-size:32px;line-height:1.5;color:#2B3443">
+<li>Log del importe</li>
+<li>Importe z dentro de su proveedor</li>
+<li>Días de factura a pago</li>
+<li>Días de factura a vencimiento</li>
+</ul>
+<p style="font-size:28px;line-height:1.4;color:#4A5568">Escalado robusto ajustado en CONTROL, recortado a ±8</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFDF8;padding:48px;border-radius:16px;border-top:8px solid #A8501A">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Cruces entre tablas · 4 banderas</h3>
+<ul style="font-size:32px;line-height:1.5;color:#2B3443">
+<li>Proveedor no registrado en Maestro</li>
+<li>Cuenta distinta a la del Maestro</li>
+<li>Cuenta usada por varios proveedores</li>
+<li>UUID de factura repetido</li>
+</ul>
+<p style="font-size:28px;line-height:1.4;color:#4A5568">Cada bandera pesa 4.0: una relación rota queda a 4 DE robustas</p>
+</div>
+</div>
+<aside>La nube de puntos mezcla dos tipos de información. Las variables de comportamiento describen el pago en sí y se escalan con medianas y rangos intercuartílicos de CONTROL, así que todas las corridas se miden con la misma regla. Las banderas relacionales salen de cruzar Pagos con Maestro y consigo mismo; ahí es donde aparecen A a D, porque cada tipo inyectado rompe al menos una de estas relaciones. Los atípicos propios del simulador (etiqueta N) multiplican el importe, así que solo mueven el comportamiento.</aside>
+</section>

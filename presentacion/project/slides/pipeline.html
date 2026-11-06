@@ -1,0 +1,33 @@
+<section id="pipeline" data-transition="fade" style="background:#F6F4EE;color:#16202E;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A8501A">Cómo corrió</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Un comando, tres pasos</h2>
+</div>
+<div style="display:flex;align-items:stretch;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #DCD6C8;border-radius:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2F6FB0">PASO 1</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Simular</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4A5568">simulate_topodata.py</p>
+<p style="font-size:32px;line-height:1.4;color:#2B3443">400 proveedores y 5,390 pagos con semilla 8347: los datos limpios de CONTROL</p>
+</div>
+<x-shape kind="arrow-right" style="width:64px;height:32px;background:#A8501A;align-self:center"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #DCD6C8;border-radius:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2F6FB0">PASO 2</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Inyectar</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4A5568">inject_anomalies.py</p>
+<p style="font-size:32px;line-height:1.4;color:#2B3443">80 corridas con anomalías A–D etiquetadas, validadas celda por celda</p>
+</div>
+<x-shape kind="arrow-right" style="width:64px;height:32px;background:#A8501A;align-self:center"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFDF8;padding:40px;border:2px solid #DCD6C8;border-radius:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2F6FB0">PASO 3</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Analizar</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4A5568">tda_anomalies.py</p>
+<p style="font-size:32px;line-height:1.4;color:#2B3443">Puntajes, diagramas de persistencia y modelo factorial en resultados_tda/</p>
+</div>
+</div>
+<div style="display:flex;gap:24px;align-items:center">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;background:#16202E;color:#F3F1EA;padding:20px 32px;border-radius:12px;white-space:nowrap">python run_workflow.py --verify</p>
+<p style="font-size:32px;line-height:1.4;color:#2B3443">regenera los pasos 1–2 en una carpeta temporal y coincide byte a byte con los 484 archivos. El análisis tarda unos 10 minutos.</p>
+</div>
+<aside>El flujo son tres scripts encadenados por run_workflow.py. El paso 1 es el simulador que ya existía. El paso 2 es nuevo: reconstruye exactamente la carpeta Archivos_modificados_80_corridas, con las mismas semillas y el mismo orden de sorteos, y comprueba que todo cambio esté explicado por su etiqueta. El paso 3 es el análisis de homología persistente. La opción --verify demuestra que los datos en disco son reproducibles: regenera los pasos 1 y 2 y los compara archivo por archivo, sin contar los finales de línea.</aside>
+</section>

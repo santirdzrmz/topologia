@@ -1,0 +1,24 @@
+<section id="shape" data-transition="fade" style="background:#F6F4EE;color:#16202E;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A8501A">Resultado · topología por corrida</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Las anomalías deforman cada corrida</h2>
+</div>
+<div style="display:flex;gap:64px;align-items:start">
+<div style="width:1040px;display:flex;flex-direction:column;gap:20px">
+<div style="background:#FFFFFF;padding:16px;border-radius:16px;border:2px solid #DCD6C8">
+<img src="/_blob/1d1d6da9a3419bb76f395e9facd229c8" alt="Diagramas de persistencia de Rips para CONTROL y la corrida T16_R05: en T16_R05 aparece un bloque de rasgos H0 y H1 cerca de la escala 4, que no existe en CONTROL" style="width:1004px;height:402px;object-fit:contain">
+</div>
+<p style="font-size:28px;line-height:1.4;color:#4A5568">Diagramas de Rips sobre una submuestra max-min de 600 pagos (azul H0, rojo H1). T16_R05 gana un bloque de rasgos que nacen cerca de la escala 4.</p>
+</div>
+<table style="flex:1;font-size:26px;color:#16202E">
+<tr><th style="width:44%">Medida</th><th style="width:22%;text-align:right">CONTROL</th><th style="width:34%;text-align:right">80 corridas</th></tr>
+<tr><td>Wasserstein H0</td><td style="text-align:right">0</td><td style="text-align:right">172 ± 20</td></tr>
+<tr><td>Wasserstein H1</td><td style="text-align:right">0</td><td style="text-align:right">33.1 ± 3.6</td></tr>
+<tr><td>Persistencia H1</td><td style="text-align:right">22.3</td><td style="text-align:right">44.1 ± 3.8</td></tr>
+<tr><td>β0 del grafo</td><td style="text-align:right">400</td><td style="text-align:right">201 ± 57</td></tr>
+<tr><td>β1 del grafo</td><td style="text-align:right">0</td><td style="text-align:right">11.5 ± 11.7</td></tr>
+</table>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4A5568">Wasserstein: distancia al diagrama de CONTROL · Grafo proveedor–cuenta–UUID: 400 árboles si está limpio</p>
+<aside>Además de puntuar cada pago, el análisis resume cada corrida completa. A la izquierda, los diagramas de persistencia de Rips: CONTROL no tiene rasgos que nazcan tarde, mientras que la corrida con todos los factores altos gana un grupo de rasgos H0 y H1 alrededor de la escala 4, que son las anomalías inyectadas. La tabla compara esos diagramas con CONTROL mediante la distancia de Wasserstein, y da también los números de Betti del grafo proveedor–cuenta–UUID. En datos limpios ese grafo es un árbol por proveedor registrado, así que β0 = 400 y β1 = 0. Las cuentas y los UUID compartidos unen árboles y crean ciclos, así que β0 cae a la mitad en promedio y β1 se vuelve positivo.</aside>
+</section>
