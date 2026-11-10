@@ -1,13 +1,13 @@
 # Auditoría topológica de pagos
 
-Laboratorio reproducible para comparar reglas SQL, aprendizaje no supervisado y futuros métodos de análisis topológico en la auditoría de pagos a proveedores. El panel de Streamlit permite pasar de los indicadores a las filas que requieren revisión y consultar cómo se generó cada alerta.
+Laboratorio reproducible para comparar reglas SQL, aprendizaje no supervisado y análisis topológico en la auditoría de pagos a proveedores. El panel de Streamlit permite pasar de los indicadores a las filas que requieren revisión y consultar cómo se generó cada alerta.
 
 | Enfoque | Estado | Propósito |
 | --- | --- | --- |
 | Reglas SQL en SQLite | Disponible | Identificar excepciones conocidas y establecer una referencia de auditoría. |
 | Isolation Forest y Local Outlier Factor (LOF) | Disponible | Priorizar pagos inusuales con un presupuesto fijo de revisión. |
 | Mapper | Planeado | Explorar grupos de pagos o proveedores y rastrear qué registros forman cada grupo. |
-| Homología persistente | Planeado | Investigar si la estructura a distintas escalas aporta señales adicionales al ranking. |
+| Homología persistente | Disponible | Priorizar pagos por su conectividad H₀ y comparar los diagramas H₀ y H₁ frente a CONTROL. |
 
 ## Ejecutar el panel
 
@@ -50,10 +50,11 @@ Las 80 variantes de la demo cubren un diseño factorial completo: cuatro factore
 
 SQL evalúa cada condición de forma directa. Los modelos de ML generan un ranking general, sin atribuir una causa A–D. Se pueden ejecutar con variables de comportamiento o añadir señales SQL explícitas para medir cómo priorizan hallazgos conocidos. Las etiquetas se reservan para evaluar. Las alertas señalan casos para revisión y no constituyen evidencia de fraude.
 
+En **Homología persistente**, selecciona una corrida y pulsa **Calcular homología persistente**. La pestaña muestra los diagramas de la corrida frente a CONTROL, sus distancias de Wasserstein y el ranking H₀ descargable. Cuando la corrida tiene etiquetas, muestra AUC ROC y average precision frente a la regla que señala cualquier alerta SQL.
+
 ## Próximos pasos
 
 - **Mapper:** construir un mapa de grupos con variables y parámetros documentados. Permitir navegar desde los nodos al detalle de los pagos y comprobar si los patrones se mantienen al cambiar la escala y el solapamiento.
-- **Homología persistente:** empezar con componentes conexas de vecindarios locales y explorar ciclos donde la representación los justifique. Comparar las firmas topológicas con referencias, asignar puntuaciones por entidad y conservar el vínculo con el registro original.
 - **Evaluación:** usar los mismos escenarios y presupuesto de revisión para métodos que generan rankings. Comparar contra SQL y contra modelos con las mismas variables de entrada, para distinguir el valor de la representación del valor del detector.
 
 ## Desarrollo
@@ -61,8 +62,9 @@ SQL evalúa cada condición de forma directa. Los modelos de ML generan un ranki
 - `app.py`: panel, visualizaciones y exportación.
 - `detectors.py`: carga de datos, reglas SQLite y evaluación por factor.
 - `ml.py`: variables, detectores y métricas de ranking.
+- `persistence.py` y `persistence_panel.py`: puntaje H₀, diagramas de persistencia y vista por corrida.
 - `generate_demo.py`: generación de datos ficticios con semillas fijas.
-- `tests/`: pruebas de SQL y ML. Ejecútalas desde `auditoria-topologica/`
+- `tests/`: pruebas de SQL, ML y homología persistente. Ejecútalas desde `auditoria-topologica/`
   con los datos de demo y sin configurar `AUDITORIA_DATA_DIR`.
 
 ```sh

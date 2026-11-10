@@ -52,7 +52,10 @@ for col, title, value in zip(cols, ['Pagos revisados', 'Registros del maestro', 
     col.metric(title, value)
 st.caption(f'Escenario {case} · Las alertas pueden coincidir en un mismo pago; no se suman para calcular el total.')
 
-overview, detail, validation, methodology, ml_tab = st.tabs(['Resumen ejecutivo', 'Explorar alertas', 'Evaluación experimental', 'Reglas y metodología', 'ML clásico'])
+overview, detail, validation, methodology, ml_tab, persistence_tab = st.tabs([
+    'Resumen ejecutivo', 'Explorar alertas', 'Evaluación experimental',
+    'Reglas y metodología', 'ML clásico', 'Homología persistente',
+])
 with overview:
     left, right = st.columns([3, 2])
     counts = pd.DataFrame({'Regla': [f'{k} · {v[0]}' for k,v in RULES.items()], 'Pagos señalados': flags.sum().values})
@@ -112,7 +115,7 @@ with methodology:
             st.code(sql, language='sql')
     st.write('B se aplica a proveedores existentes con cuenta informada. C señala todos los pagos de proveedores que comparten una cuenta no vacía en el maestro, incluso si otro cambio alteró la cuenta del pago. D señala todas las filas del UUID repetido.')
     st.write('Campos vacíos quedan fuera de sus respectivas reglas; requieren controles de calidad separados. La referencia de autorización es el maestro del escenario, no el CONTROL original.')
-    st.write('Isolation Forest y LOF están disponibles en ML clásico. Próximos detectores: grafos y homología persistente. Deberán devolver una predicción por fila y mantener las etiquetas separadas de sus entradas.')
+    st.write('ML clásico contiene Isolation Forest y LOF. Homología persistente muestra el ranking H₀ y los diagramas H₀ y H₁ frente a CONTROL. Las etiquetas se reservan para evaluar los resultados.')
 
 with ml_tab:
     st.subheader('Priorizar pagos con aprendizaje no supervisado')
@@ -199,3 +202,9 @@ with ml_tab:
         st.plotly_chart(px.imshow(means, zmin=0, zmax=1, text_auto='.0%', color_continuous_scale='Teal', title='Recall medio · 5 réplicas por tratamiento'))
         st.dataframe(batch, hide_index=True, width='stretch')
         st.download_button('Descargar experimento SQL y ML', batch.to_csv(index=False).encode('utf-8-sig'), 'comparacion_sql_ml.csv', 'text/csv')
+
+with persistence_tab:
+    from persistence_panel import show_persistence
+
+    control_payments, _, control_flags = case_data('CONTROL')
+    show_persistence(case, payments, flags, control_payments, control_flags)
