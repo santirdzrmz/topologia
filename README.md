@@ -23,6 +23,9 @@ Requiere Python 3.9 o superior.
 | `simulate_topodata.py` | Generador (semilla, número de proveedores y rango de fechas al inicio del archivo) |
 | `inject_anomalies.py` | Diseño factorial: inyecta anomalías A–D en 80 corridas |
 | `tda_anomalies.py` | Análisis de anomalías con homología persistente sobre las corridas |
+| `simulate_experiment.py` | Experimento sin fuga: CONTROL sin anomalías + 80 corridas con el generador de R |
+| `tda_comportamiento.py` | Homología persistente solo con comportamiento; banderas y etiquetas se usan después |
+| `tda_indicadores.py` | Vector de anomalías ponderadas por proveedor (A, B, C, D) y su homología persistente |
 | `r_rng.py` | Port del generador aleatorio de R, para que la misma semilla dé los mismos datos |
 | `simulated_data/Maestro_simulado.csv` | 400 proveedores |
 | `simulated_data/Pagos_simulado.csv` | ~5,390 pagos |
@@ -92,6 +95,69 @@ Salidas en `resultados_tda/`: `informe.md` (resumen), `metricas_por_corrida.csv`
 `efectos_factoriales.csv`, `puntajes_T16_R05.csv` y figuras (`diagramas_persistencia.png`,
 `auc_por_tipo.png`, `efectos_principales.png`, `puntajes_por_etiqueta.png`). Tarda unos
 10 minutos.
+
+## Experimento sin fuga: solo comportamiento
+
+En el flujo anterior las cuatro banderas de cruce con el maestro entran al modelo, y cada
+anomalía A–D se define justo por lo que revisa su bandera, así que bandera = etiqueta. Este
+experimento separa las dos cosas:
+
+```bash
+python run_workflow.py simulate_exp analyze_beh
+```
+
+| Paso | Script | Salida |
+|---|---|---|
+| simulate_exp | `simulate_experiment.py` | `corridas_simulador/` (CONTROL + 80 corridas) |
+| analyze_beh | `tda_comportamiento.py` | `resultados_comportamiento/` |
+
+- **CONTROL sin anomalías:** `simulate_topodata.py --sin-atipicos` omite la sección 4 del
+  simulador (montos ×6–25 y vencimientos invertidos). Sin la opción, la salida sigue igual a la de R.
+- **80 corridas:** mismas anomalías A–D, niveles, orden y reglas que `inject_anomalies.py`, pero
+  todos los sorteos salen de `r_rng.RRandom` (en R: `set.seed` + `sample.int`).
+- **Qué entra al modelo:** solo comportamiento. C4 = log del importe, z del importe dentro del
+  proveedor, días factura→pago y factura→vencimiento. C6 = C4 + cadencia calculada dentro de
+  Pagos (brecha relativa con el pago anterior del mismo proveedor y log del número de pagos del
+  proveedor). C6M = C6 + atributos del proveedor en el Maestro (tipo, términos, método,
+  impuesto, Resico, sitio, antigüedad). Las banderas no entran.
+- **R, topología de la red:** con proveedores, cuentas y UUID como nodos y los pagos y el
+  Maestro como enlaces, cada pago recibe cantidades genéricas de la red: proveedores y ciclos
+  (β1) de su componente, y la persistencia H0 y los ciclos H1 que provoca cuando la red se
+  filtra por fecha. Ninguna codifica una regla de anomalía. Se reporta R sola y C6M + R.
+- **Modelo:** solo homología persistente. Puntaje H0 por pago (τ = 0.25), grupos de H0 (el árbol
+  de expansión mínima se corta en la mayor muerte H0 de CONTROL) y Wasserstein contra CONTROL.
+- **Qué se marca después:** con las etiquetas y las banderas, ya calculados los grupos, se
+  describe qué contiene cada grupo (porcentaje de A–D, banderas, enriquecimiento hipergeométrico)
+  y se mide la detección (AUC; Isolation Forest solo como referencia).
+
+Salidas en `resultados_comportamiento/`: `informe.md`, `metricas_por_corrida.csv`,
+`grupos_T16_R05.csv` y figuras (`codigo_barras_h0.png`, `puntajes_por_etiqueta.png`,
+`diagramas_persistencia.png`, `auc_por_tipo.png`).
+
+## Vector de indicadores ponderados por proveedor
+
+```bash
+python run_workflow.py analyze_ind   # sobre corridas_simulador/
+```
+
+Cada proveedor es un punto x_i = (A, B, C, D) ∈ {0, 1}⁴, colocado en w·x_i con pesos
+w = (20, 30, 30, 25): proveedor no registrado, cuenta no autorizada, cuenta compartida con
+otro proveedor y factura duplicada (UUID repetido). Los proveedores son los del Maestro más
+cada `VENDOR_ID` de Pagos sin renglón en el Maestro. La puntuación S = w·x junta
+configuraciones distintas (B y C valen 30; B+D y C+D valen 55); la nube de puntos no.
+
+- **H0:** el árbol de expansión mínima, cortado a ε = 10, separa exactamente las
+  configuraciones, y sus escalas de unión dan la jerarquía entre perfiles.
+- **H1:** un ciclo indica que dos anomalías ocurren solas y juntas (las cuatro esquinas
+  de un rectángulo).
+
+Los indicadores son las reglas que definen A–D, así que coinciden con las etiquetas por
+construcción: esto describe el perfil de riesgo para el desarrollo de proveedores, no mide
+detección. Los pesos de A y D son una elección y se cambian en `WEIGHTS`.
+
+Salidas en `resultados_indicadores/`: `informe.md`, `metricas_por_corrida.csv`,
+`vectores_T16_R05.csv` y figuras (`s_vs_configuracion.png`, `jerarquia_h0.png`,
+`configuraciones_por_tratamiento.png`).
 
 ## Reproducibilidad
 

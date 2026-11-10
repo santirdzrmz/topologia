@@ -7,10 +7,18 @@ End-to-end workflow:
   2. inject    inject_anomalies.py   -> Archivos_modificados_80_corridas/Resultados_80_pruebas/
   3. analyze   tda_anomalies.py      -> resultados_tda/
 
+Leak-free experiment (behaviour-only model, CONTROL with no anomalies):
+
+  simulate_exp  simulate_experiment.py  -> corridas_simulador/
+  analyze_beh   tda_comportamiento.py   -> resultados_comportamiento/
+  analyze_ind   tda_indicadores.py      -> resultados_indicadores/
+                (weighted A-D vector per vendor, on the same runs)
+
 Usage:
-  python run_workflow.py                      # all steps
+  python run_workflow.py                      # the three original steps
   python run_workflow.py inject analyze       # only some steps, in order
-  python run_workflow.py --verify             # regenerate steps 1-2 in a temp
+  python run_workflow.py simulate_exp analyze_beh   # the leak-free experiment
+  python run_workflow.py --verify             # regenerate the data steps in a temp
                                               # folder and compare (line endings ignored)
 """
 import filecmp
@@ -23,12 +31,19 @@ ROOT = Path(__file__).resolve().parent
 SIM_DIR = ROOT / "simulated_data"
 RUNS_DIR = ROOT / "Archivos_modificados_80_corridas" / "Resultados_80_pruebas"
 TDA_DIR = ROOT / "resultados_tda"
+EXP_DIR = ROOT / "corridas_simulador"
+BEH_DIR = ROOT / "resultados_comportamiento"
+IND_DIR = ROOT / "resultados_indicadores"
 
 STEPS = {
     "simulate": lambda: ["simulate_topodata.py", SIM_DIR],
     "inject": lambda: ["inject_anomalies.py", SIM_DIR, RUNS_DIR],
     "analyze": lambda: ["tda_anomalies.py", RUNS_DIR, TDA_DIR],
+    "simulate_exp": lambda: ["simulate_experiment.py", EXP_DIR],
+    "analyze_beh": lambda: ["tda_comportamiento.py", EXP_DIR, BEH_DIR],
+    "analyze_ind": lambda: ["tda_indicadores.py", EXP_DIR, IND_DIR],
 }
+DEFAULT_STEPS = ["simulate", "inject", "analyze"]
 
 
 def run(script, *args):
@@ -55,23 +70,31 @@ def differing_files(a, b):
 
 def verify():
     with tempfile.TemporaryDirectory() as tmp:
-        sim, runs = Path(tmp) / "sim", Path(tmp) / "runs"
+        sim, runs, exp = Path(tmp) / "sim", Path(tmp) / "runs", Path(tmp) / "exp"
         run("simulate_topodata.py", sim)
-        run("inject_anomalies.py", sim, runs)
         bad = (differing_files(sim, SIM_DIR) if SIM_DIR.exists() else [str(SIM_DIR)])
-        bad += (differing_files(runs, RUNS_DIR) if RUNS_DIR.exists() else [str(RUNS_DIR)])
+        checked = ["simulated_data"]
+        # the generated run folders are gitignored: compare them only if present
+        if RUNS_DIR.exists():
+            run("inject_anomalies.py", sim, runs)
+            bad += differing_files(runs, RUNS_DIR)
+            checked.append("Resultados_80_pruebas")
+        if EXP_DIR.exists():
+            run("simulate_experiment.py", exp)
+            bad += differing_files(exp, EXP_DIR)
+            checked.append("corridas_simulador")
     if bad:
         print("Differences (%d):" % len(bad))
         print("\n".join("  " + b for b in bad[:20]))
         sys.exit(1)
-    print("OK: simulated_data and Resultados_80_pruebas reproduced exactly (line endings ignored)")
+    print("OK: %s reproduced exactly (line endings ignored)" % ", ".join(checked))
 
 
 def main(argv):
     if "--verify" in argv:
         verify()
         return
-    steps = argv or list(STEPS)
+    steps = argv or DEFAULT_STEPS
     unknown = [s for s in steps if s not in STEPS]
     if unknown:
         sys.exit("unknown step(s): %s (choose from %s)" % (unknown, list(STEPS)))
