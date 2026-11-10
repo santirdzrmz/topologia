@@ -1,6 +1,6 @@
 # Datos simulados para análisis topológico
 
-Versión en Python de `simulate_topodata.R` (carpeta `Reto`). Genera tablas ficticias de
+Versión en Python del simulador original en R. Genera tablas ficticias de
 proveedores (Maestro) y pagos (Pagos) con estructura incrustada: clusters por tipo de
 proveedor, un factor latente de tamaño, pagos con cadencia periódica (ciclos), outliers y
 valores faltantes estructurados.
@@ -13,7 +13,9 @@ python simulate_topodata.py            # escribe en ./simulated_data
 python simulate_topodata.py otra_ruta  # o en otra carpeta
 ```
 
-Requiere Python 3.9 o superior.
+La versión en Python requiere Python 3.9 o superior. También puedes ejecutar
+`Rscript simulate_topodata.R` desde esta carpeta para regenerar los archivos
+con R y los paquetes `dplyr`, `purrr`, `tidyr`, `stringr`, `lubridate` y `tibble`.
 
 ## Archivos
 
@@ -21,6 +23,7 @@ Requiere Python 3.9 o superior.
 |---|---|
 | `run_workflow.py` | Orquesta los tres pasos del flujo y la verificación |
 | `simulate_topodata.py` | Generador (semilla, número de proveedores y rango de fechas al inicio del archivo) |
+| `simulate_topodata.R` | Generador original en R |
 | `inject_anomalies.py` | Diseño factorial: inyecta anomalías A–D en 80 corridas |
 | `tda_anomalies.py` | Análisis de anomalías con homología persistente sobre las corridas |
 | `simulate_experiment.py` | Experimento sin fuga: CONTROL sin anomalías + 80 corridas con el generador de R |
@@ -167,3 +170,12 @@ los del script de R. En `Maestro_ground_truth_clusters.csv` unas pocas filas dif
 
 El orden de las llamadas aleatorias replica el script de R línea por línea; reordenarlas
 cambia los datos.
+
+## Panel de auditoría de pagos
+
+La carpeta [auditoria-topologica](auditoria-topologica/) contiene el panel de
+Streamlit, las reglas SQL, los modelos Isolation Forest y LOF, y el generador
+de 80 escenarios de demostración. El panel usa un conjunto organizado por
+escenario, separado de las tablas base de `simulated_data/`. Su
+[guía de ejecución](auditoria-topologica/README.md) explica cómo generar la
+demo o abrir las corridas de `Reto`.
