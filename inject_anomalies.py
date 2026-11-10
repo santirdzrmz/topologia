@@ -63,13 +63,18 @@ def experimental_matrix():
                                        "replicas"])
 
 
-def inject(maestro, pagos, levels, seed):
+def inject(maestro, pagos, levels, seed, rng=None):
     """Apply factors C, A, B, D (in that order) to copies of the tables.
+
+    `rng` defaults to `numpy.random.default_rng(seed)`; any object with a
+    numpy-style `choice(n, size, replace=False)` works (simulate_experiment.py
+    passes one backed by R's RNG).
 
     Returns (maestro, pagos, etiquetas_maestro, etiquetas_pagos, registro,
     resumen). Log values always refer to the CONTROL tables.
     """
-    rng = np.random.default_rng(seed)
+    if rng is None:
+        rng = np.random.default_rng(seed)
     n_m, n_p = len(maestro), len(pagos)
     m, p = maestro.copy(), pagos.copy()
     lab_p = {f: np.zeros(n_p, dtype=bool) for f in "ABCD"}

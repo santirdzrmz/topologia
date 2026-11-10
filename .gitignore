@@ -12,5 +12,6 @@ __pycache__/
 *.key
 .claude/settings.local.json
 
-# large regenerable data (rebuild with: python run_workflow.py inject)
+# large regenerable data (rebuild with: python run_workflow.py inject / simulate_exp)
 Archivos_modificados_80_corridas/
+corridas_simulador/
