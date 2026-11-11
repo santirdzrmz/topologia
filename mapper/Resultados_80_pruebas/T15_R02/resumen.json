@@ -1,0 +1,21 @@
+{
+  "semilla": 20262605,
+  "niveles_porcentaje": {
+    "A": 2,
+    "B": 3,
+    "C": 7,
+    "D": 10
+  },
+  "filas_maestro": 400,
+  "filas_pagos": 5390,
+  "A_pagos": 108,
+  "B_pagos": 162,
+  "C_proveedores": 28,
+  "C_pagos_proveedores_afectados": 345,
+  "C_parejas": 14,
+  "D_pagos_con_uuid_duplicado": 540,
+  "D_parejas": 270,
+  "validacion": "OK",
+  "tratamiento": 15,
+  "replica": 2
+}
