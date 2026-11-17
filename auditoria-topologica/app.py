@@ -52,9 +52,9 @@ for col, title, value in zip(cols, ['Pagos revisados', 'Registros del maestro', 
     col.metric(title, value)
 st.caption(f'Escenario {case} · Las alertas pueden coincidir en un mismo pago; no se suman para calcular el total.')
 
-overview, detail, validation, methodology, ml_tab, persistence_tab = st.tabs([
+overview, detail, validation, methodology, ml_tab, persistence_tab, mapper_tab = st.tabs([
     'Resumen ejecutivo', 'Explorar alertas', 'Evaluación experimental',
-    'Reglas y metodología', 'ML clásico', 'Homología persistente',
+    'Reglas y metodología', 'ML clásico', 'Homología persistente', 'Mapper',
 ])
 with overview:
     left, right = st.columns([3, 2])
@@ -208,3 +208,8 @@ with persistence_tab:
 
     control_payments, _, control_flags = case_data('CONTROL')
     show_persistence(case, payments, flags, control_payments, control_flags)
+
+with mapper_tab:
+    from mapper_panel import show_mapper
+
+    show_mapper(case, payments, flags, control_payments)

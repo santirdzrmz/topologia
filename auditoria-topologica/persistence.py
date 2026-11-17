@@ -39,9 +39,13 @@ def fit_reference(payments):
     return center, scale.where(scale.gt(0), 1.0)
 
 
-def point_cloud(payments, flags, reference):
+def scaled_behavior(payments, reference):
     center, scale = reference
-    continuous = ((behavior(payments).fillna(center) - center) / scale).clip(-8, 8)
+    return ((behavior(payments).fillna(center) - center) / scale).clip(-8, 8)
+
+
+def point_cloud(payments, flags, reference):
+    continuous = scaled_behavior(payments, reference)
     return np.column_stack((continuous.to_numpy(), RELATIONAL_WEIGHT * flags.to_numpy(dtype=float)))
 
 
