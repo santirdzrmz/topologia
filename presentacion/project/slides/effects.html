@@ -1,0 +1,22 @@
+<section id="effects" data-transition="fade" style="background:#16202E;color:#F3F1EA;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#E8894A">Resultado · modelo factorial</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#F3F1EA">Cada tipo deja su propia huella</h2>
+</div>
+<table style="font-size:28px;color:#F3F1EA">
+<tr><th style="width:36%">Respuesta, nivel bajo → alto</th><th style="width:16%;text-align:right">A</th><th style="width:16%;text-align:right">B</th><th style="width:16%;text-align:right">C</th><th style="width:16%;text-align:right">D</th></tr>
+<tr><td>Wasserstein H0</td><td style="text-align:right">+4.3</td><td style="text-align:right">+17.0</td><td style="text-align:right"><b>+28.6</b></td><td style="text-align:right">+19.2</td></tr>
+<tr><td>Wasserstein H1</td><td style="text-align:right">—</td><td style="text-align:right">+2.9</td><td style="text-align:right"><b>+4.6</b></td><td style="text-align:right">+3.5</td></tr>
+<tr><td>β0 del grafo</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">−8.4</td><td style="text-align:right"><b>−112.4</b></td></tr>
+<tr><td>β1 del grafo</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right"><b>+22.2</b></td></tr>
+<tr><td>AUC H0 con τ = 0.01</td><td style="text-align:right"><b>−0.079</b></td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td></tr>
+<tr><td>AUC Isolation Forest</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">−0.006</td><td style="text-align:right"><b>−0.018</b></td></tr>
+</table>
+<div style="display:flex;gap:32px">
+<p style="flex:1;font-size:28px;line-height:1.4;color:#B8C4D4;border-top:4px solid #E8894A;padding:20px 0 0 0"><b>C</b> es la que más mueve la nube: las cuentas compartidas desplazan proveedores enteros</p>
+<p style="flex:1;font-size:28px;line-height:1.4;color:#B8C4D4;border-top:4px solid #E8894A;padding:20px 0 0 0"><b>D</b> recablea el grafo: los UUID duplicados unen árboles y cierran ciclos</p>
+<p style="flex:1;font-size:28px;line-height:1.4;color:#B8C4D4;border-top:4px solid #E8894A;padding:20px 0 0 0"><b>A</b> solo importa con τ muy pequeño, por enmascaramiento</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#B8C4D4">MCO, efectos principales + interacciones dobles · p &lt; 0.01 · — = no significativo · negrita = mayor</p>
+<aside>Como las 80 corridas siguen un diseño factorial, cada número por corrida se puede explicar con los niveles de los cuatro factores. Los valores son el cambio medio cuando un factor pasa de bajo a alto, manteniendo los demás fijos. Solo se muestran efectos principales; las dos interacciones significativas (A×D en el AUC con τ = 0.01 y C×D en Isolation Forest) son pequeñas. El AUC H0 con τ = 0.25 no aparece porque vale 1.000 en todas las corridas, así que ningún factor lo mueve. Isolation Forest, en cambio, empeora de forma medible al crecer D.</aside>
+</section>

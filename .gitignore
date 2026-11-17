@@ -3,3 +3,15 @@ __pycache__/
 .RData
 .Rhistory
 .DS_Store
+.venv/
+
+# secrets and local config
+.env
+.env.*
+*.pem
+*.key
+.claude/settings.local.json
+
+# large regenerable data (rebuild with: python run_workflow.py inject / simulate_exp)
+Archivos_modificados_80_corridas/
+corridas_simulador/

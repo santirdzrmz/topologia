@@ -1,0 +1,27 @@
+<section id="takeaways" data-transition="fade" style="background:#ECE8DE;color:#16202E;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A8501A">Conclusiones</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Lo que muestra y lo que no</h2>
+</div>
+<div style="display:flex;gap:40px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#FFFDF8;padding:48px;border-radius:16px;border-top:8px solid #2F6FB0">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Muestra</h3>
+<ul style="font-size:30px;line-height:1.45;color:#2B3443">
+<li>La señal es relacional: solo con comportamiento el puntaje es azar</li>
+<li>El puntaje H0 por masa resiste anomalías agrupadas desde τ ≥ 0.05</li>
+<li>Iguala o supera a Isolation Forest en cada tipo de anomalía</li>
+<li>La topología por corrida refleja cuánta anomalía de cada tipo contiene</li>
+</ul>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#FFFDF8;padding:48px;border-radius:16px;border-top:8px solid #A8501A">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:600">Limitaciones</h3>
+<ul style="font-size:30px;line-height:1.45;color:#2B3443">
+<li>El AUC 1.000 viene en parte del diseño: cada tipo activa una bandera que una regla simple también detectaría</li>
+<li>Los atípicos de comportamiento (N) son la prueba difícil: 0.998 vs 0.997 de Isolation Forest</li>
+<li>Detectar a los proveedores C, no sus pagos, es más débil: 0.886</li>
+<li>Un solo conjunto simulado; el siguiente paso son datos reales</li>
+</ul>
+</div>
+</div>
+<aside>El resumen honesto: la topología funciona, pero la mayor parte de la mejora viene de codificar los cruces entre tablas como dimensiones de la nube de puntos. Hecho eso, las anomalías inyectadas quedan lejos de todo lo demás y un puntaje H0 bien diseñado las separa perfectamente, aunque también lo haría una regla escrita a mano para cada bandera. Las pruebas más interesantes que siguen son anomalías que no rompen un cruce, como importes o tiempos inusuales dentro de un proveedor válido, y correr el flujo sobre datos de pagos reales. Todo esto se puede regenerar con python run_workflow.py.</aside>
+</section>

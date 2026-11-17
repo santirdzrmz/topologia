@@ -11,7 +11,12 @@ Random draws go through `r_rng.RRandom`, a port of R's RNG, so with the same
 seed the output matches the R script's CSVs. The order of random draws
 below mirrors the R code line by line; do not reorder.
 
-Usage:  python simulate_topodata.py [out_dir]
+Usage:  python simulate_topodata.py [out_dir] [--sin-atipicos]
+
+--sin-atipicos skips section 4 (the sporadic x6-25 amounts and flipped due
+dates) to produce a CONTROL with no anomalies at all. Those are the last
+random draws, so every other value is unchanged. Without the flag the output
+still matches the R script.
 """
 import csv
 import math
@@ -26,7 +31,9 @@ from r_rng import RRandom
 SEED = 8347
 N_VENDORS = 400
 DATE_RANGE = (date(2023, 1, 1), date(2025, 12, 31))
-OUT_DIR = Path(sys.argv[1] if len(sys.argv) > 1 else "simulated_data")
+_POSITIONAL = [a for a in sys.argv[1:] if not a.startswith("--")]
+OUT_DIR = Path(_POSITIONAL[0] if _POSITIONAL else "simulated_data")
+SIN_ATIPICOS = "--sin-atipicos" in sys.argv[1:]
 OUTLIER_PAYMENT_FRAC = 0.015
 
 rng = RRandom(SEED)
@@ -379,15 +386,19 @@ P["UUID"] = [uuid_like() for _ in range(n_pay)]
 # --------------------------------------------------------------------------
 # 4. Inject sporadic anomalous payments (outliers) into normal vendors
 # --------------------------------------------------------------------------
-n_outlier = int(round(n_pay * OUTLIER_PAYMENT_FRAC))
-outlier_rows = [i - 1 for i in rng.sample_int(n_pay, n_outlier)]
-mult = rng.runif(n_outlier, 6, 25)
-for r, m in zip(outlier_rows, mult):
-    imp[r] = imp[r] * m
-    P["PAGADO"][r] = fmt_money(imp[r])
-flip = [r for r, u in zip(outlier_rows, rng.runif(n_outlier)) if u < 0.5]
-for r, o in zip(flip, ri(5, 30, len(flip))):
-    P["FECHA_VENCIMIENTO"][r] = P["FECHA_FACTURA"][r] - timedelta(days=o)
+if SIN_ATIPICOS:
+    n_outlier = 0
+    outlier_rows = []
+else:
+    n_outlier = int(round(n_pay * OUTLIER_PAYMENT_FRAC))
+    outlier_rows = [i - 1 for i in rng.sample_int(n_pay, n_outlier)]
+    mult = rng.runif(n_outlier, 6, 25)
+    for r, m in zip(outlier_rows, mult):
+        imp[r] = imp[r] * m
+        P["PAGADO"][r] = fmt_money(imp[r])
+    flip = [r for r, u in zip(outlier_rows, rng.runif(n_outlier)) if u < 0.5]
+    for r, o in zip(flip, ri(5, 30, len(flip))):
+        P["FECHA_VENCIMIENTO"][r] = P["FECHA_FACTURA"][r] - timedelta(days=o)
 
 # --------------------------------------------------------------------------
 # 5. Format & select final columns
